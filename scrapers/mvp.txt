@@ -1,0 +1,31 @@
+
+
+date provider slab rate fee
+
+
+
+provider slab start end
+
+
+create table `exchange_rate_daily` ( 
+`date` date NOT NULL DEFAULT '0000-00-00',
+`provider` varchar(20) not null default '', 
+`slab_start` float default 0,
+`slab_end` float default 0, 
+`rate` float default 0, 
+`flat_fee` float default 0 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+select round(rate*@x,2) as remittance_amount,round(@x+flat_fee,2) as cost, round((rate*@x)/(@x+flat_fee),2) as effective_rate from exchange_rate_daily where @x between slab_start and slab_end;
+
+
+
+
+
+MVP - Best exchange rate today for $X
+
+Backend design
+
+for provider go from 1 to maxLimit in $500 increments
+
+	get exchange rate and fees

@@ -1,22 +1,35 @@
 <?php
+require_once("common.php");
 
-function getJSONResponse($url,$cookie) {
-	$ch = curl_init();
+$process_conf = parse_ini_file("../configs/xoom.ini");
+$today = date('Y-m-d');
 
-	curl_setopt ($ch, CURLOPT_URL, $url);
-	curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt ($ch, CURLOPT_COOKIEJAR, $cookie);
-	curl_setopt ($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.1.6) Gecko/20070725 Firefox/2.0.0.6");
-	curl_setopt ($ch, CURLOPT_TIMEOUT, 0);
-	curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
-	//curl_setopt($ch, CURLOPT_HEADER, TRUE);
-	$result = curl_exec($ch);
-	return $result;
+
+
+$slab_starts = explode(",",$process_conf['slab_starts']);
+//print print_r($slab_starts,true);
+$slab_ends = explode(",",$process_conf['slab_ends']);
+$index = 0;
+foreach($slab_starts as $slab_start) {
+	//print $slab_start."\n";
+	$slab_end = $slab_ends[$index];
+	$xoomResponse = getJSONResponse("https://www.xoom.com/ajax/options-xfer-amount-ajax?receiveCountryCode=IN&sendAmount=$slab_end","xoom.txt");
+	$rateObj = json_decode($xoomResponse,true);
+	//print print_r($rateObj,true);
+	$fee = $rateObj["result"]["disbursementTypes"]["DEPOSIT"]["fee"];
+	$rate = $rateObj["result"]["fxRate"];
+	$sql = "insert into exchange_rate_daily(date,provider,slab_start,slab_end,rate,flat_fee) values('$today','xoom',$slab_start,$slab_end,$rate,$fee) on duplicate key update rate = $rate,flat_fee = $fee";
+	print $sql."\n";
+	if(!$mysqli->query($sql)) {
+		echo "Query failed: (" . $mysqli->errno . ") " . $mysqli->error;
+	}
+	$index += 1;
 }
 
-$amount_in_usd = $argv[1];
 
-print getJSONResponse("https://www.xoom.com/ajax/options-xfer-amount-ajax?receiveCountryCode=IN&sendAmount=$amount_in_usd");
+if ($mysqli->connect_errno) {
+    echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+}
 
 
 ?>

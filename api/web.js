@@ -29,7 +29,7 @@ app.configure(function(){
 
 app.get('/bestrate/:amount_in_usd',function(req,res){
 	var amount_in_usd = sanitizer.escape(req.params.amount_in_usd);
-	var sql = "select provider,round(rate*"+amount_in_usd+"-india_fee*"+amount_in_usd+",2) as remittance_amount,round("+amount_in_usd+"+flat_fee,2) as cost, round((rate*"+amount_in_usd+"-india_fee*"+amount_in_usd+")/("+amount_in_usd+"+flat_fee),2) as effective_rate from exchange_rate_daily where date = CURDATE() and "+amount_in_usd+" between slab_start and slab_end order by effective_rate desc";
+	var sql = "select provider,round(rate*"+amount_in_usd+"-india_fee*"+amount_in_usd+",2) as remittance_amount_in_inr,round("+amount_in_usd+"+flat_fee,2) as cost_in_usd, round((rate*"+amount_in_usd+"-india_fee*"+amount_in_usd+")/("+amount_in_usd+"+flat_fee),2) as effective_rate from exchange_rate_daily where date = CURDATE() and "+amount_in_usd+" between slab_start and slab_end order by effective_rate desc";
 	var query = connection.query(sql, function(err, rows, fields) {
 		res.send(JSON.stringify(rows));  
 	});

@@ -7,19 +7,28 @@ date provider slab rate fee
 provider slab start end
 
 
-create table `exchange_rate_daily` ( 
-`date` date NOT NULL DEFAULT '0000-00-00',
-`provider` varchar(20) not null default '', 
-`slab_start` float default 0,
-`slab_end` float default 0, 
-`rate` float default 0, 
-`flat_fee` float default 0 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `exchange_rate_daily` (
+  `date` date NOT NULL DEFAULT '0000-00-00',
+  `provider` varchar(20) NOT NULL DEFAULT '',
+  `slab_start` float DEFAULT '0',
+  `slab_end` float DEFAULT '0',
+  `rate` float DEFAULT '0',
+  `flat_fee` float DEFAULT '0',
+  `india_fee` float DEFAULT '0',
+  `last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `daily_provider_slab` (`date`,`provider`,`slab_start`,`slab_end`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
 
 select round(rate*@x,2) as remittance_amount,round(@x+flat_fee,2) as cost, round((rate*@x)/(@x+flat_fee),2) as effective_rate from exchange_rate_daily where @x between slab_start and slab_end;
 
 
+Wells fargo URL
 
+hdfc bank
+https://www.wellsfargo.com/as/grs/IN/55/ACCT_TO_ACCT/1001
+
+icici bank
+https://www.wellsfargo.com/as/grs/IN/12/ACCT_TO_ACCT/1001
 
 
 MVP - Best exchange rate today for $X

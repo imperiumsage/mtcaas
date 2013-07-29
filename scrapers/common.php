@@ -25,4 +25,26 @@ function getJSONResponse($url,$cookie) {
 	return $result;
 }
 
+function getMonthlyCurrencyRateCSV($first,$last,$currency) {
+	$url = "http://www.oanda.com/currency/historical-rates-classic?date_fmt=us&date=$last&date1=$first&exch=USD&expr=$currency&margin_fixed=0&format=CSV&redirected=1";
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.2) Gecko/20090729 Firefox/3.5.2 GTB5');
+	$html = curl_exec($ch);
+	$start = "<PRE>";
+	$end = "</PRE>";
+	$startpos = stripos($html, $start);
+	$endpos = stripos($html, $end);
+	$start_of_substr = $startpos + strlen($start);
+	$csv = substr($html, $start_of_substr, $endpos - $start_of_substr);
+	return $csv;
+}
+
+function formatDate($input) {
+	$datetime = new DateTime($input);
+	return date('Y-m-d',$datetime->getTimeStamp());
+
+}
+
 ?>

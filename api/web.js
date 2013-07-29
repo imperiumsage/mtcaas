@@ -26,6 +26,15 @@ app.configure(function(){
   app.use(express.static(__dirname + '/public'));
 });
 
+app.get('/bankrate',function(req,res){
+	var sql = "select * from bank_rate where date = CURDATE()";
+	var query = connection.query(sql, function(err, rows, fields) {
+		res.send(JSON.stringify(rows));  
+	});
+	console.log(query.sql);
+	
+});
+
 
 app.get('/bestrate/:amount_in_usd',function(req,res){
 	var amount_in_usd = sanitizer.escape(req.params.amount_in_usd);

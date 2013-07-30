@@ -8,7 +8,8 @@
     "mongoose": "latest",
     "moment": "latest",
     "mysql": "latest",
-    "iniparser":"latest"
+    "iniparser":"latest",
+    "googalytics": "latest"
   },
   "engines": {
     "node": "0.10.x",

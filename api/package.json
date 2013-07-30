@@ -9,7 +9,8 @@
     "moment": "latest",
     "mysql": "latest",
     "iniparser":"latest",
-    "googalytics": "latest"
+    "googalytics": "latest",
+    "underscore" : "latest"
   },
   "engines": {
     "node": "0.10.x",

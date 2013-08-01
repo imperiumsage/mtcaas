@@ -3,7 +3,7 @@ require_once("common.php");
 require_once("simple_html_dom.php");
 
 $today = date('Y-m-d');
-$hour = date('H');
+$hour = date('G');
 
 $html = file_get_html("http://www.xe.com/staticcharts/get/?INR,USD,1,1&cs=1");
 $lastRate = $html->find('div[class="HLC"]',0)->lastChild()->plaintext;
